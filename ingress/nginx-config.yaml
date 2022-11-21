@@ -1,0 +1,8 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-config
+  namespace: matrix
+data:
+  http-snippet: |
+    proxy_ignore_client_abort on;

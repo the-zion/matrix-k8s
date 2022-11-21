@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: matrix
+  name: gateway
+  labels:
+    app: gateway
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: gateway
+      labels:
+        app: gateway
+    spec:
+      imagePullSecrets:
+        - name: coding-docker
+      containers:
+        - name: gateway
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            runAsUser: 1000
+            runAsNonRoot: true
+          image: cloudbase-100023518199-docker.pkg.coding.net/matrix/matrix/gateway
+          command: [ "/home/app/gateway" ]
+          args:
+            - -ctrl.service
+            - http://nacos-headless.matrix.svc.cluster.local:8848
+            - -discovery.dsn
+            - nacos://nacos-headless.matrix.svc.cluster.local:8848
+          env:
+            - name: NACOS_NAMESPACE
+              value: abc
+            - name: NACOS_GROUP
+              value: matrix
+            - name: NACOS_ACCESS_TOKEN
+              value: abc
+            - name: NACOS_USERNAME
+              value: user
+            - name: NACOS_PASSWORD
+              value: abc
+            - name: ADVERTISE_NAME
+              value: gateway
+            - name: LOG_SELECT
+              value: tencent
+            - name: TENCENT_LOG_HOST
+              value: ap-shanghai.cls.tencentyun.com
+            - name: TENCENT_LOG_ACCESSKEY
+              value: abc
+            - name: TENCENT_LOG_ACCESSSECRET
+              value: abc
+            - name: TENCENT_LOG_TOPIC_ID
+              value: abc
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: "3Gi"
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            httpGet:
+              path: /health
+              port: 8080
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: gateway

@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: matrix
+  name: achievement
+  labels:
+    app: achievement
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: achievement
+      labels:
+        app: achievement
+    spec:
+      imagePullSecrets:
+        - name: coding-docker
+      containers:
+        - name: achievement
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            runAsUser: 1000
+            runAsNonRoot: true
+          image: cloudbase-100023518199-docker.pkg.coding.net/matrix/matrix/achievement
+          command: [ "/home/app/achievement" ]
+          args:
+            - -nacos
+            - nacos-headless.matrix.svc.cluster.local:8848
+            - -trace
+            - http://127.0.0l.1:14268/api/traces
+            - -token
+            - abc
+            - -namespace
+            - abc
+            - -group
+            - matrix
+            - -username
+            - user
+            - -password
+            - abc
+            - -log
+            - tencent
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            httpGet:
+              path: /v1/get/achievement/healthz
+              port: 8000
+
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: achievement

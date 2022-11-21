@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: matrix
+  name: message
+  labels:
+    app: message
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: message
+      labels:
+        app: message
+    spec:
+      imagePullSecrets:
+        - name: coding-docker
+      containers:
+        - name: message
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            runAsUser: 1000
+            runAsNonRoot: true
+          image: cloudbase-100023518199-docker.pkg.coding.net/matrix/matrix/message
+          command: [ "/home/app/message" ]
+          args:
+            - -nacos
+            - nacos-headless.matrix.svc.cluster.local:8848
+            - -trace
+            - http://127.0.0.1:14268/api/traces
+            - -token
+            - abc
+            - -namespace
+            - abc
+            - -group
+            - matrix
+            - -username
+            - user
+            - -password
+            - abc
+            - -log
+            - tencent
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            httpGet:
+              path: /v1/get/message/healthz
+              port: 8000
+          env:
+            - name: ROCKETMQ_GO_LOG_LEVEL
+              value: error
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: message
