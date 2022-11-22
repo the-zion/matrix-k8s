@@ -54,8 +54,7 @@ spec:
           livenessProbe:
             initialDelaySeconds: 10
             periodSeconds: 5
-            httpGet:
-              path: /v1/get/message/healthz
+            tcpSocket:
               port: 8000
           env:
             - name: ROCKETMQ_GO_LOG_LEVEL

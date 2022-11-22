@@ -54,8 +54,7 @@ spec:
           livenessProbe:
             initialDelaySeconds: 10
             periodSeconds: 5
-            httpGet:
-              path: /v1/get/user/healthz
+            tcpSocket:
               port: 8000
       restartPolicy: Always
   selector:

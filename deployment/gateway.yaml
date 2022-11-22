@@ -65,8 +65,7 @@ spec:
           livenessProbe:
             initialDelaySeconds: 10
             periodSeconds: 5
-            httpGet:
-              path: /health
+            tcpSocket:
               port: 8080
       restartPolicy: Always
   selector:
