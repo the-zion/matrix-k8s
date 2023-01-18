@@ -1,0 +1,50 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  namespace: matrix
+  name: cronjob
+spec:
+  schedule: "* */3 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  startingDeadlineSeconds: 60
+
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          imagePullSecrets:
+            - name: coding-docker
+          containers:
+            - name: cronjob
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                privileged: false
+                runAsUser: 1000
+                runAsNonRoot: true
+              image: cloudbase-100023518199-docker.pkg.coding.net/matrix/matrix/job
+              imagePullPolicy: IfNotPresent
+              command: [ "/home/app/job" ]
+              env:
+                - name: NACOS_ADDR
+                  value: nacos-headless.matrix.svc.cluster.local:8848
+                - name: NACOS_ACCESS_TOKEN
+                  value: abc
+                - name: NACOS_DATAID
+                  value: matrix.cornjob
+                - name: NACOS_GROUP
+                  value: matrix
+                - name: NACOS_NAMESPACE
+                  value: abc
+                - name: TENCENT_LOG_HOST
+                  value: ap-shanghai.cls.tencentyun.com
+                - name: TENCENT_LOG_ACCESSKEY
+                  value: abc
+                - name: TENCENT_LOG_ACCESSSECRET
+                  value: abc
+                - name: TENCENT_LOG_TOPIC_ID
+                  value: abc
+          restartPolicy: OnFailure
