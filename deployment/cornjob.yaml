@@ -47,4 +47,11 @@ spec:
                   value: abc
                 - name: TENCENT_LOG_TOPIC_ID
                   value: abc
+              resources:
+                limits:
+                  cpu: "1000m"
+                  memory: "1Gi"
+                requests:
+                  cpu: "100m"
+                  memory: "256Mi"
           restartPolicy: OnFailure
