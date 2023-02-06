@@ -59,7 +59,10 @@ spec:
           env:
             - name: ROCKETMQ_GO_LOG_LEVEL
               value: error
+            - name: timestep
+              value: "1"
       restartPolicy: Always
+      serviceAccountName: matrix
   selector:
     matchLabels:
       app: message

@@ -26,6 +26,9 @@ spec:
             runAsUser: 1000
             runAsNonRoot: true
           image: cloudbase-100023518199-docker.pkg.coding.net/matrix/matrix/achievement
+          env:
+            - name: timestep
+              value: "1"
           command: [ "/home/app/achievement" ]
           args:
             - -nacos
@@ -58,6 +61,7 @@ spec:
               port: 8000
 
       restartPolicy: Always
+      serviceAccountName: matrix
   selector:
     matchLabels:
       app: achievement

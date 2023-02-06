@@ -26,6 +26,9 @@ spec:
             runAsUser: 1000
             runAsNonRoot: true
           image: cloudbase-100023518199-docker.pkg.coding.net/matrix/matrix/creation
+          env:
+            - name: timestep
+              value: "1"
           command: ["/home/app/creation"]
           args:
             - -nacos
@@ -57,6 +60,7 @@ spec:
             tcpSocket:
               port: 8000
       restartPolicy: Always
+      serviceAccountName: matrix
   selector:
     matchLabels:
       app: creation

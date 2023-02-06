@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: matrix
+  namespace: matrix
+subjects:
+- kind: ServiceAccount
+  name: matrix
+  namespace: matrix
+roleRef:
+  kind: Role
+  name: matrix
+  apiGroup: rbac.authorization.k8s.io
+
