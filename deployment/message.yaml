@@ -7,6 +7,11 @@ metadata:
     app: message
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   template:
     metadata:
       name: message
@@ -53,7 +58,12 @@ spec:
               memory: "256Mi"
           livenessProbe:
             initialDelaySeconds: 10
-            periodSeconds: 5
+            periodSeconds: 10
+            tcpSocket:
+              port: 8000
+          readinessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
             tcpSocket:
               port: 8000
           env:
